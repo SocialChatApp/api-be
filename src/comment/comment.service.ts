@@ -1,26 +1,38 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { DatabaseService } from 'src/database/database.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class CommentService {
-  create(createCommentDto: CreateCommentDto) {
-    return 'This action adds a new comment';
+  constructor(private readonly service: DatabaseService) { };
+
+  async create(createCommentDto: Prisma.CommentCreateInput) {
+    return this.service.comment.create(
+      {
+        data: createCommentDto
+      });
   }
 
-  findAll() {
-    return `This action returns all comment`;
+  async findAll() {
+    return this.service.comment.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} comment`;
+  async findOne(id: number) {
+    return this.service.comment.findUnique({ where: { id } });
   }
 
-  update(id: number, updateCommentDto: UpdateCommentDto) {
-    return `This action updates a #${id} comment`;
+  async update(id: number, updateCommentDto: UpdateCommentDto) {
+    return this.service.comment.update({
+      where: {
+        id
+      },
+      data: updateCommentDto
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} comment`;
+  async remove(id: number) {
+    return this.service.comment.delete({ where: { id } });
   }
 }
