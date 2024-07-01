@@ -1,26 +1,53 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
+import { DatabaseService } from 'src/database/database.service';
 import { CreatePostDto } from './dto/create-post.dto';
-import { UpdatePostDto } from './dto/update-post.dto';
 
 @Injectable()
 export class PostService {
-  create(createPostDto: CreatePostDto) {
-    return 'This action adds a new post';
+
+  constructor(private readonly service: DatabaseService) { };
+
+  //Şu anlık userId kısmında hata verdiği | sorun olduğu için default dto kullanılıyor. Sonradan prisma.postcreateinput'a geçilecek
+  async create(createPostDto: CreatePostDto) {
+    return this.service.post.create(
+      {
+        data: {
+          title: createPostDto.title,
+          content: createPostDto.content,
+          comments: {
+            create: []
+          },
+          userId: createPostDto.userId
+        }
+      }
+    )
   }
 
-  findAll() {
-    return `This action returns all post`;
+  async findAll() {
+    return this.service.post.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} post`;
+  async findOne(id: number) {
+    return this.service.post.findUnique({ where: { id } });
   }
 
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  async update(id: number, updatePostDto: Prisma.PostUpdateInput) {
+    return this.service.post.update(
+      {
+        where: { id },
+        data: {
+          title: updatePostDto.title,
+          content: updatePostDto.content
+        }
+      })
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+  async remove(id: number) {
+    return this.service.post.delete({
+      where: {
+        id
+      }
+    })
   }
 }
