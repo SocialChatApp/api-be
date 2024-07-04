@@ -1,28 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { Prisma } from '@prisma/client';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
   constructor(private readonly service: DatabaseService) { };
 
 
-  async create(createUserDto: Prisma.UserCreateInput) {
-    return this.service.user.create({
-      data: {
-        email: createUserDto.email,
-        name: createUserDto.name,
-        surname: createUserDto.surname,
-        comments: {
-          create: []  // Boş dizi yerine boş bir nesne kullanarak
-        },
-        role: createUserDto.role,
-        searchType: createUserDto.searchType,
-        posts: {
-          create: []  // Boş dizi yerine boş bir nesne kullanarak
-        }
+  async create(createUserDto: CreateUserDto) {
+
+    const data: Prisma.UserCreateInput = {
+      email: createUserDto.email,
+      name: createUserDto.name,
+      surname: createUserDto.surname,
+      comments: {
+        create: []
+      },
+      role: createUserDto.role,
+      searchType: createUserDto.searchType,
+      posts: {
+        create: []
       }
-    });
+    };
+
+    return this.service.user.create({ data: data });
   }
 
   async findAll(role?: 'NORMAL' | 'PREMIUM' | 'ADMIN') {
