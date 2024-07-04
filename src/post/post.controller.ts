@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, ValidationPipe } from '@nestjs/common';
 import { PostService } from './post.service';
 import { Prisma } from '@prisma/client';
 import { CreatePostDto } from './dto/create-post.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
 
 @Controller('post')
 export class PostController {
@@ -9,7 +10,7 @@ export class PostController {
 
   @Post()
   //Şu anlık default dto kullanılıyor hata aldığımız için - sonradan prisma.postcreateinput'a geçilecek
-  create(@Body() createPostDto: CreatePostDto) {
+  create(@Body(ValidationPipe) createPostDto: CreatePostDto) {
     return this.postService.create(createPostDto);
   }
 
@@ -24,7 +25,7 @@ export class PostController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() updatePostDto: Prisma.PostUpdateInput) {
+  update(@Param('id', ParseIntPipe) id: number, @Body(ValidationPipe) updatePostDto: UpdatePostDto) {
     return this.postService.update(id, updatePostDto);
   }
 

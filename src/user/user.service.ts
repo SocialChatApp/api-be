@@ -8,7 +8,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UserService {
   constructor(private readonly service: DatabaseService) { };
 
-
   async create(createUserDto: CreateUserDto) {
 
     const data: Prisma.UserCreateInput = {
@@ -25,7 +24,13 @@ export class UserService {
       }
     };
 
-    return this.service.user.create({ data: data });
+    return this.service.user.create({
+      data: data,
+      include: {
+        posts: true,
+        comments: true
+      }
+    });
   }
 
   async findAll(role?: 'NORMAL' | 'PREMIUM' | 'ADMIN') {
@@ -33,40 +38,81 @@ export class UserService {
       return this.service.user.findMany({
         where: {
           role
+        },
+        include: {
+          comments: true,
+          posts: true
         }
       })
     }
-    return this.service.user.findMany();
+    return this.service.user.findMany({
+      include: {
+        comments: true,
+        posts: true
+      }
+    });
   }
 
   async findOne(id: number) {
     return this.service.user.findUnique({
       where: {
         id
+      },
+      include: {
+        posts: true,
+        comments: true
       }
     });
   }
 
-  async update(id: number, updateUserDto: Prisma.UserUpdateInput) {
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const data: Prisma.UserUpdateInput = {
+      email: updateUserDto.email,
+      name: updateUserDto.name,
+      surname: updateUserDto.surname,
+      role: updateUserDto.role,
+      searchType: updateUserDto.searchType,
+      comments: {
+        deleteMany: {},
+        create: updateUserDto.comments.map(comment => ({
+          content: comment.content,
+          postId: comment.postId,
+          userId: comment.userId,
+        })),
+      },
+      posts: {
+        deleteMany: {},
+        create: updateUserDto.posts.map(post => ({
+          title: post.title,
+          content: post.content,
+          userId: post.userId,
+          comments: {
+            create: post.comments.map(comment => ({
+              content: comment.content,
+              postId: comment.postId,
+              userId: comment.userId,
+            }))
+          }
+        })),
+      }
+    };
+
     return this.service.user.update({
       where: { id },
-      data: {
-        email: updateUserDto.email,
-        name: updateUserDto.name,
-        surname: updateUserDto.surname,
-        comments: {
-          update: updateUserDto.comments?.update || []
-        },
-        role: updateUserDto.role,
-        searchType: updateUserDto.searchType,
-        posts: {
-          update: updateUserDto.posts?.update || []
-        }
+      data: data,
+      include: {
+        posts: true,
+        comments: true
       }
     });
   }
 
   async remove(id: number) {
-    return this.service.user.delete({ where: { id } });
+    return this.service.user.delete({
+      where: { id }, include: {
+        posts: true,
+        comments: true
+      }
+    });
   }
 }

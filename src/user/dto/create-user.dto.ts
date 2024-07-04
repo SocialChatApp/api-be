@@ -20,6 +20,7 @@ export class CreateUserDto {
     role: Role;
     @IsEnum(SearchType, { message: "SearchType must be invalid such as PUBLIC or PRIVATE " })
     searchType: SearchType;
+    @Type(() => CreatePostDto)
     posts: Array<CreatePostDto>;
 }
 

@@ -8,19 +8,34 @@ import { Prisma } from '@prisma/client';
 export class CommentService {
   constructor(private readonly service: DatabaseService) { };
 
-  async create(createCommentDto: Prisma.CommentCreateInput) {
+  async create(createCommentDto: CreateCommentDto) {
     return this.service.comment.create(
       {
-        data: createCommentDto
-      });
+        data: createCommentDto,
+        include: {
+          Post: true,
+          User: true
+        }
+      }
+    );
   }
 
   async findAll() {
-    return this.service.comment.findMany();
+    return this.service.comment.findMany({
+      include: {
+        Post: true,
+        User: true
+      }
+    });
   }
 
   async findOne(id: number) {
-    return this.service.comment.findUnique({ where: { id } });
+    return this.service.comment.findUnique({
+      where: { id }, include: {
+        User: true,
+        Post: true,
+      }
+    });
   }
 
   async update(id: number, updateCommentDto: UpdateCommentDto) {
@@ -28,11 +43,20 @@ export class CommentService {
       where: {
         id
       },
-      data: updateCommentDto
+      data: updateCommentDto,
+      include: {
+        User: true,
+        Post: true
+      }
     });
   }
 
   async remove(id: number) {
-    return this.service.comment.delete({ where: { id } });
+    return this.service.comment.delete({
+      where: { id }, include: {
+        User: true,
+        Post: true
+      }
+    });
   }
 }
