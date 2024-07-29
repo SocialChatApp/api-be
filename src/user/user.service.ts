@@ -14,6 +14,7 @@ export class UserService {
       email: createUserDto.email,
       name: createUserDto.name,
       surname: createUserDto.surname,
+      password: createUserDto.password,
       comments: {
         create: []
       },
@@ -64,6 +65,19 @@ export class UserService {
       }
     });
   }
+
+  async findOneByEmail(email: string) {
+    return this.service.user.findUnique({
+      where: {
+        email,
+      },
+      include: {
+        posts: true,
+        comments: true,
+      },
+    });
+  }
+
 
   async update(id: number, updateUserDto: UpdateUserDto) {
     const data: Prisma.UserUpdateInput = {
