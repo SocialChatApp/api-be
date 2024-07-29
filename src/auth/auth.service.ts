@@ -4,12 +4,16 @@ import { UserService } from 'src/user/user.service';
 import { AuthResult } from './dto/AuthResult';
 import { LoginDto } from './dto/LoginDto';
 import { SignInDto } from './dto/SignInDto';
+import { JwtService } from '@nestjs/jwt';
 
 
 @Injectable()
 export class AuthService {
 
-    constructor(private readonly userService: UserService) { };
+    constructor(
+        private readonly userService: UserService,
+        private readonly jwtService: JwtService
+    ) { };
 
     async Authenticate(userInput: LoginDto): Promise<AuthResult> {
         const user = await this.ValidateUser(userInput);
@@ -17,14 +21,8 @@ export class AuthService {
             throw new UnauthorizedException();
         }
 
-        return {
-            UserId: user.userId,
-            UserMail: userInput.email,
-            UserPassword: userInput.password,
-            AccesToken: 'fake-access',
-        }
+        return this.SignIn(user);
     }
-
 
     async ValidateUser(userDto: LoginDto): Promise<SignInDto | null> {
         const user = await this.userService.findOneByEmail(userDto.email);
@@ -37,5 +35,22 @@ export class AuthService {
             };
         }
         return null;
+    }
+
+
+    async SignIn(user: SignInDto): Promise<AuthResult> {
+        const payload = {
+            sub: user.userId,
+            userMail: user.eMail,
+        };
+
+        const accessToken = await this.jwtService.signAsync(payload);
+
+        return {
+            AccesToken: accessToken,
+            UserId: user.userId,
+            UserMail: user.eMail,
+            UserPassword: user.password
+        };
     }
 }
