@@ -21,7 +21,7 @@ export class AuthService {
             throw new UnauthorizedException();
         }
 
-        return this.SignIn(user);
+        return this.CreateToken(user);
     }
 
     async ValidateUser(userDto: LoginDto): Promise<SignInDto | null> {
@@ -38,7 +38,7 @@ export class AuthService {
     }
 
 
-    async SignIn(user: SignInDto): Promise<AuthResult> {
+    async CreateToken(user: SignInDto): Promise<AuthResult> {
         const payload = {
             sub: user.userId,
             userMail: user.eMail,
