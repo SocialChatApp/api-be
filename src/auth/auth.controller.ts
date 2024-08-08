@@ -2,11 +2,15 @@ import { Body, Controller, Get, HttpCode, HttpStatus, NotImplementedException, P
 import { LoginDto } from './dto/LoginDto';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './guard/auth.guard';
+import { UserService } from 'src/user/user.service';
 
 @Controller('auth')
 export class AuthController {
 
-    constructor(private readonly service: AuthService) { };
+    constructor(
+        private readonly service: AuthService,
+        private readonly userService: UserService
+    ) { };
 
     @HttpCode(HttpStatus.OK)
     @Post('login')
@@ -17,6 +21,6 @@ export class AuthController {
     @UseGuards(AuthGuard)
     @Get('me')
     getUserInfo(@Request() request) {
-        return request.user;
+        return this.userService.findOne(request.user.userId);
     }
 }

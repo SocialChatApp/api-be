@@ -58,10 +58,6 @@ export class UserService {
     return this.service.user.findUnique({
       where: {
         id
-      },
-      include: {
-        posts: true,
-        comments: true
       }
     });
   }
