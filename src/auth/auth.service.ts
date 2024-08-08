@@ -48,9 +48,9 @@ export class AuthService {
 
         return {
             AccesToken: accessToken,
-            UserId: user.userId,
-            UserMail: user.eMail,
-            UserPassword: user.password
+            // UserId: user.userId,
+            // UserMail: user.eMail,
+            // UserPassword: user.password
         };
     }
 }
