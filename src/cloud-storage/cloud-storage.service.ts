@@ -1,5 +1,5 @@
 import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Readable } from 'stream';
 
@@ -19,5 +19,19 @@ export class CloudStorageService {
             Key: fileName,
             Body: file
         }));
+    }
+
+    async getFile(key: string): Promise<Readable> {
+        const command = new GetObjectCommand({
+            Bucket: 'nestjs-upload',
+            Key: key,
+        });
+
+        try {
+            const { Body } = await this.s3Client.send(command);
+            return Body as Readable;
+        } catch (error) {
+            throw new NotFoundException(`File with key ${key} not found`);
+        }
     }
 }
