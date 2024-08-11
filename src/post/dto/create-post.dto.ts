@@ -4,7 +4,7 @@ import { Type } from "class-transformer";
 
 
 export class CreatePostDto {
-    id: number;
+    id: string;
 
     @IsString()
     @IsNotEmpty()
@@ -20,6 +20,6 @@ export class CreatePostDto {
 
     @IsNumber()
     @IsNotEmpty()
-    userId: number;
+    userId: string;
 }
 

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, ValidationPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, ValidationPipe, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { PostService } from './post.service';
 import { Prisma } from '@prisma/client';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -24,19 +24,19 @@ export class PostController {
 
   @Get(':id')
   @UseGuards(AuthGuard)
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.postService.findOne(id);
   }
 
   @Patch(':id')
   @UseGuards(AuthGuard)
-  update(@Param('id', ParseIntPipe) id: number, @Body(ValidationPipe) updatePostDto: UpdatePostDto) {
+  update(@Param('id', ParseUUIDPipe) id: string, @Body(ValidationPipe) updatePostDto: UpdatePostDto) {
     return this.postService.update(id, updatePostDto);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard)
-  remove(@Param('id', ParseIntPipe) id: number) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.postService.remove(id);
   }
 }

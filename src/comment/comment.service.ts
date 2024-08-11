@@ -34,7 +34,7 @@ export class CommentService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     return this.service.comment.findUnique({
       where: { id }, include: {
         User: true,
@@ -43,7 +43,7 @@ export class CommentService {
     });
   }
 
-  async update(id: number, updateCommentDto: UpdateCommentDto) {
+  async update(id: string, updateCommentDto: UpdateCommentDto) {
     return this.service.comment.update({
       where: {
         id
@@ -56,7 +56,7 @@ export class CommentService {
     });
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     return this.service.comment.delete({
       where: { id }, include: {
         User: true,

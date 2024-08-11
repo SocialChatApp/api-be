@@ -6,7 +6,7 @@ import { Role, SearchType } from "@prisma/client";
 import { Type } from "class-transformer";
 
 export class CreateUserDto {
-    id: number;
+    id: string;
     @IsEmail()
     @IsNotEmpty()
     email: string;

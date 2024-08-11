@@ -38,7 +38,7 @@ export class PostService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     return this.service.post.findUnique({
       where: { id }, include: {
         user: true,
@@ -47,7 +47,7 @@ export class PostService {
     });
   }
 
-  async update(id: number, updatePostDto: UpdatePostDto) {
+  async update(id: string, updatePostDto: UpdatePostDto) {
     return this.service.post.update(
       {
         where: { id },
@@ -62,7 +62,7 @@ export class PostService {
       })
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     return this.service.post.delete({
       where: {
         id

@@ -31,7 +31,7 @@ export class ReplyService {
         )
     }
 
-    async findOneReply(id: number) {
+    async findOneReply(id: string) {
         return this.service.commentReplies.findUnique(
             {
                 where: {
@@ -46,7 +46,7 @@ export class ReplyService {
     }
 
 
-    async deleteReply(id: number) {
+    async deleteReply(id: string) {
         return this.service.commentReplies.delete(
             {
                 where: {
@@ -60,7 +60,7 @@ export class ReplyService {
         )
     }
 
-    async updateReply(id: number, updateReplyDto: UpdateReplyDto) {
+    async updateReply(id: string, updateReplyDto: UpdateReplyDto) {
         return this.service.commentReplies.update({
             where: {
                 id

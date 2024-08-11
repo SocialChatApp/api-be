@@ -54,7 +54,7 @@ export class UserService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     return this.service.user.findUnique({
       where: {
         id
@@ -75,7 +75,7 @@ export class UserService {
   }
 
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto) {
     const data: Prisma.UserUpdateInput = {
       email: updateUserDto.email,
       name: updateUserDto.name,
@@ -117,7 +117,7 @@ export class UserService {
     });
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     return this.service.user.delete({
       where: { id }, include: {
         posts: true,

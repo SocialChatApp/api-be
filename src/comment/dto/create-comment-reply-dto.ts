@@ -1,17 +1,17 @@
 import { IsNotEmpty, IsNumber, IsString } from "class-validator"
 
 export class CreateReplyDto {
-    id: number
+    id: string
     @IsString()
     @IsNotEmpty()
     content: string
 
     @IsNotEmpty()
     @IsNumber()
-    userId: number
+    userId: string
 
     @IsNotEmpty()
     @IsNumber()
-    commentId: number
+    commentId: string
 
 }

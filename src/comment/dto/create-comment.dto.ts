@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsNumber, IsString } from "class-validator"
 
 export class CreateCommentDto {
-    id: number
+    id: string
 
     @IsString()
     @IsNotEmpty()
@@ -9,10 +9,10 @@ export class CreateCommentDto {
 
     @IsNotEmpty()
     @IsNumber()
-    userId: number
+    userId: string
 
     @IsNotEmpty()
     @IsNumber()
-    postId: number
+    postId: string
 }
 

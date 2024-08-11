@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, ParseUUIDPipe, Patch, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { ReplyService } from './reply.service';
 import { UpdateReplyDto } from 'src/comment/dto/update-comment-reply-dto';
@@ -22,19 +22,19 @@ export class ReplyController {
 
     @Get(':id')
     @UseGuards(AuthGuard)
-    findOneReply(@Param('id', ParseIntPipe) id: number) {
+    findOneReply(@Param('id', ParseUUIDPipe) id: string) {
         return this.service.findOneReply(id);
     }
 
     @Patch(':id')
     @UseGuards(AuthGuard)
-    updateReply(@Param('id', ParseIntPipe) id: number, @Body() updateReplyDto: UpdateReplyDto) {
+    updateReply(@Param('id', ParseUUIDPipe) id: string, @Body() updateReplyDto: UpdateReplyDto) {
         return this.service.updateReply(id, updateReplyDto);
     }
 
     @Delete(':id')
     @UseGuards(AuthGuard)
-    removeReply(@Param('id', ParseIntPipe) id: number) {
+    removeReply(@Param('id', ParseUUIDPipe) id: string) {
         return this.service.deleteReply(id);
     }
 }

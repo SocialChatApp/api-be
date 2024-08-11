@@ -1,5 +1,5 @@
 export class SignInDto {
-    userId: number
+    userId: string
     eMail: string
     password: string
 }
