@@ -18,7 +18,7 @@ export class CreatePostDto {
     @Type(() => CreateCommentDto)
     comments: CreateCommentDto[];
 
-    @IsNumber()
+    @IsString()
     @IsNotEmpty()
     userId: string;
 }

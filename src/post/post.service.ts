@@ -30,12 +30,15 @@ export class PostService {
   }
 
   async findAll() {
+    return this.service.post.findMany();
+  }
+
+  async findAllByUserId(id: string) {
     return this.service.post.findMany({
-      include: {
-        user: true,
-        comments: true
+      where: {
+        userId: id,
       }
-    });
+    })
   }
 
   async findOne(id: string) {
@@ -46,6 +49,7 @@ export class PostService {
       }
     });
   }
+
 
   async update(id: string, updatePostDto: UpdatePostDto) {
     return this.service.post.update(

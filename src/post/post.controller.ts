@@ -22,6 +22,12 @@ export class PostController {
     return this.postService.findAll();
   }
 
+  @Get(':userId')
+  @UseGuards(AuthGuard)
+  findAllByUserId(@Param('userId', ParseUUIDPipe) userId: string) {
+    return this.postService.findAllByUserId(userId);
+  }
+
   @Get(':id')
   @UseGuards(AuthGuard)
   findOne(@Param('id', ParseUUIDPipe) id: string) {

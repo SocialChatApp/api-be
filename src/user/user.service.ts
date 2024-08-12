@@ -15,14 +15,8 @@ export class UserService {
       name: createUserDto.name,
       surname: createUserDto.surname,
       password: createUserDto.password,
-      comments: {
-        create: []
-      },
       role: createUserDto.role,
-      searchType: createUserDto.searchType,
-      posts: {
-        create: []
-      }
+      searchType: createUserDto.searchType
     };
 
     return this.service.user.create({
@@ -81,30 +75,7 @@ export class UserService {
       name: updateUserDto.name,
       surname: updateUserDto.surname,
       role: updateUserDto.role,
-      searchType: updateUserDto.searchType,
-      comments: {
-        deleteMany: {},
-        create: updateUserDto.comments.map(comment => ({
-          content: comment.content,
-          postId: comment.postId,
-          userId: comment.userId,
-        })),
-      },
-      posts: {
-        deleteMany: {},
-        create: updateUserDto.posts.map(post => ({
-          title: post.title,
-          content: post.content,
-          userId: post.userId,
-          comments: {
-            create: post.comments.map(comment => ({
-              content: comment.content,
-              postId: comment.postId,
-              userId: comment.userId,
-            }))
-          }
-        })),
-      }
+      searchType: updateUserDto.searchType
     };
 
     return this.service.user.update({

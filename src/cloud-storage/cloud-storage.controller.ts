@@ -2,16 +2,18 @@ import { Controller, FileTypeValidator, Get, MaxFileSizeValidator, Param, ParseF
 import { CloudStorageService } from './cloud-storage.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
+import { extname } from 'path';
 
 @Controller('cloud-storage')
 export class CloudStorageController {
 
     constructor(private readonly service: CloudStorageService) { };
 
-    @Post()
+    @Post(':path/:name')
     @UseInterceptors(FileInterceptor('file'))
     uploadFile(
-        @Query('path') path: string,
+        @Param('path') path: string,
+        @Param('name') name: string,
         @UploadedFile(new ParseFilePipe({
             validators: [
                 // new MaxFileSizeValidator({
@@ -24,7 +26,10 @@ export class CloudStorageController {
         }))
         file: Express.Multer.File) {
 
-        this.service.upload(path + "/" + file.originalname, file.buffer);
+        const fileExtension = extname(file.originalname);
+        const newFileName = `${path}/${name}${fileExtension}`;
+        console.log(newFileName);
+        this.service.upload(newFileName, file.buffer);
     }
 
 
