@@ -21,6 +21,7 @@ model User {
   password       String
   name           String
   surname        String
+  avatarUrl      String
   comments       Comment[]
   role           Role
   searchType     SearchType
@@ -45,6 +46,7 @@ model Post {
   id       String     @id @default(uuid())
   title    String
   content  String
+  imageUrl String
   user     User       @relation(fields: [userId], references: [id])
   comments Comment[]
   userId   String

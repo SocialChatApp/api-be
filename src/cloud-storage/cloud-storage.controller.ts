@@ -28,8 +28,7 @@ export class CloudStorageController {
 
         const fileExtension = extname(file.originalname);
         const newFileName = `${path}/${name}${fileExtension}`;
-        console.log(newFileName);
-        this.service.upload(newFileName, file.buffer);
+        return this.service.upload(newFileName, file.buffer);
     }
 
 

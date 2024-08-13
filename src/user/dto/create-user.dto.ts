@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { IsEmail, IsEnum, IsNotEmpty } from "class-validator";
+import { IsEmail, IsEnum, IsNotEmpty, IsString } from "class-validator";
 import { CreateCommentDto } from "src/comment/dto/create-comment.dto"
 import { CreatePostDto } from "src/post/dto/create-post.dto"
 import { Role, SearchType } from "@prisma/client";
@@ -24,6 +24,8 @@ export class CreateUserDto {
     searchType: SearchType;
     @Type(() => CreatePostDto)
     posts: Array<CreatePostDto>;
+    @IsString()
+    avatarUrl: string;
 }
 
 

@@ -16,7 +16,8 @@ export class UserService {
       surname: createUserDto.surname,
       password: createUserDto.password,
       role: createUserDto.role,
-      searchType: createUserDto.searchType
+      searchType: createUserDto.searchType,
+      avatarUrl: createUserDto.avatarUrl
     };
 
     return this.service.user.create({
@@ -75,7 +76,8 @@ export class UserService {
       name: updateUserDto.name,
       surname: updateUserDto.surname,
       role: updateUserDto.role,
-      searchType: updateUserDto.searchType
+      searchType: updateUserDto.searchType,
+      avatarUrl: updateUserDto.avatarUrl
     };
 
     return this.service.user.update({

@@ -14,11 +14,14 @@ export class CloudStorageService {
 
 
     async upload(fileName: string, file: Buffer) {
-        await this.s3Client.send(new PutObjectCommand({
+        const response = await this.s3Client.send(new PutObjectCommand({
             Bucket: 'nestjs-upload',
             Key: fileName,
             Body: file
         }));
+
+        const fileUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_S3_REGION}.amazonaws.com/${fileName}`;
+        return fileUrl;
     }
 
     async getFile(key: string): Promise<Readable> {

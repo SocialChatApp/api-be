@@ -16,6 +16,7 @@ export class PostService {
         data: {
           title: createPostDto.title,
           content: createPostDto.content,
+          imageUrl: createPostDto.imageUrl,
           comments: {
             create: []
           },
@@ -57,7 +58,8 @@ export class PostService {
         where: { id },
         data: {
           title: updatePostDto.title,
-          content: updatePostDto.content
+          content: updatePostDto.content,
+          imageUrl: updatePostDto.imageUrl
         },
         include: {
           user: true,
