@@ -1,4 +1,4 @@
-import { Controller, FileTypeValidator, Get, MaxFileSizeValidator, Param, ParseFilePipe, Post, Query, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Delete, FileTypeValidator, Get, HttpCode, MaxFileSizeValidator, Param, ParseFilePipe, Post, Query, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { CloudStorageService } from './cloud-storage.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
@@ -38,5 +38,15 @@ export class CloudStorageController {
         const fileStream = await this.service.getFile(key);
         res.setHeader('Content-Type', 'image/jpeg');
         return fileStream.pipe(res);
+    }
+
+    @Delete(':path/:name')
+    @HttpCode(204) // Başarılı silme işlemi için 204 No Content döndür
+    async deleteFile(
+        @Param('path') path: string,
+        @Param('name') name: string
+    ): Promise<void> {
+        const key = `${path}/${name}`;
+        await this.service.deleteFile(key);
     }
 }

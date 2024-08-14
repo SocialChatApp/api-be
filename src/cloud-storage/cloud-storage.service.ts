@@ -1,4 +1,4 @@
-import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Readable } from 'stream';
@@ -36,5 +36,14 @@ export class CloudStorageService {
         } catch (error) {
             throw new NotFoundException(`File with key ${key} not found`);
         }
+    }
+
+    async deleteFile(key: string): Promise<void> {
+        const command = new DeleteObjectCommand({
+            Bucket: 'nestjs-upload',
+            Key: key,
+        });
+
+        await this.s3Client.send(command);
     }
 }
