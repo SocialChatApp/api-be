@@ -8,11 +8,11 @@ export class CreateCommentDto {
     content: string
 
     @IsNotEmpty()
-    @IsNumber()
+    @IsString()
     userId: string
 
     @IsNotEmpty()
-    @IsNumber()
+    @IsString()
     postId: string
 }
 

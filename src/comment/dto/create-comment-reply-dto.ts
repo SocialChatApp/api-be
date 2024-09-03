@@ -7,11 +7,11 @@ export class CreateReplyDto {
     content: string
 
     @IsNotEmpty()
-    @IsNumber()
+    @IsString()
     userId: string
 
     @IsNotEmpty()
-    @IsNumber()
+    @IsString()
     commentId: string
 
 }
