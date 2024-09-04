@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Ip } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { Prisma } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -24,15 +24,21 @@ export class UserService {
       avatarUrl: createUserDto.avatarUrl
     };
 
+    if (await this.IsEmailExist(createUserDto.email))
+      throw new ConflictException("Unique constraint violation: email already exists.");
+
+
     const createdUser = await this.service.user.create({
       data: data
     });
 
+    this.loggerService.log(`User created successfully with ID: ${createdUser.id}`, UserService.name);
+
     return { id: createdUser.id };
+
   }
 
-  async findAll(@Ip() ip: String, role?: 'NORMAL' | 'PREMIUM' | 'ADMIN') {
-
+  async findAll(role?: 'NORMAL' | 'PREMIUM' | 'ADMIN') {
     if (role) {
       return this.service.user.findMany({
         where: {
@@ -45,7 +51,11 @@ export class UserService {
   }
 
   async findOne(id: string) {
-    return this.service.user.findUnique({
+
+    if (!await this.IsUserExist(id))
+      throw new NotFoundException("This user does not exist");
+
+    return await this.service.user.findUnique({
       where: {
         id
       }
@@ -53,15 +63,24 @@ export class UserService {
   }
 
   async findOneByEmail(email: string) {
-    return this.service.user.findUnique({
+
+    if (!await this.IsEmailExist(email))
+      throw new NotFoundException("This email not found");
+
+    return await this.service.user.findUnique({
       where: {
-        email,
+        email
       }
     });
   }
 
 
   async update(id: string, updateUserDto: UpdateUserDto) {
+
+    if (!await this.IsUserExist(id))
+      throw new NotFoundException("This user does not exist");
+
+
     const data: Prisma.UserUpdateInput = {
       email: updateUserDto.email,
       name: updateUserDto.name,
@@ -71,15 +90,46 @@ export class UserService {
       avatarUrl: updateUserDto.avatarUrl
     };
 
-    return this.service.user.update({
+    const updatedUser = await this.service.user.update({
       where: { id },
       data: data
     });
+
+    this.loggerService.log(`User updated successfully with ID: ${updatedUser.id}`, UserService.name);
+
+    return updatedUser;
   }
 
   async remove(id: string) {
-    return this.service.user.delete({
+    if (!await this.IsUserExist(id))
+      throw new NotFoundException("This user does not exist");
+
+    const deletedUser = await this.service.user.delete({
       where: { id }
     });
+
+    this.loggerService.log(`User deleted successfully with ID: ${deletedUser.id}`, UserService.name);
+
+    return deletedUser;
+  }
+
+
+  async IsEmailExist(email: string) {
+    const user = await this.service.user.findUnique({
+      where: {
+        email
+      }
+    });
+
+    return !!user;
+  }
+
+  async IsUserExist(id: string): Promise<boolean> {
+    const user = await this.service.user.findUnique({
+      where: {
+        id
+      }
+    })
+    return !!user;
   }
 }

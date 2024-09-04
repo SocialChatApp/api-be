@@ -1,9 +1,9 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, ValidationPipe, UsePipes, ParseUUIDPipe, HttpCode, HttpStatus, Ip } from '@nestjs/common';
-import { UserService } from './user.service';
 import { Prisma } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoggerService } from 'src/logger/logger.service';
+import { UserService } from './user.service';
 
 @Controller('users')
 export class UserController {
@@ -13,33 +13,32 @@ export class UserController {
   ) { }
 
   @Post()
-  async create(@Body(ValidationPipe) createUserDto: CreateUserDto) {
+  async create(@Ip() ip: string, @Body(ValidationPipe) createUserDto: CreateUserDto) {
+    this.myLogger.log(`Request Create User | IP: ${ip}`, UserController.name);
     return await this.userService.create(createUserDto);
   }
 
   @Get()
-  findAll(@Ip() ip: string, @Query('role') role?: 'NORMAL' | 'PREMIUM' | 'ADMIN') {
-    if (role)
-      this.myLogger.log(`Request for FindAll User Of Type ${ip}`, UserController.name);
-    else
-      this.myLogger.log(`Request for FindAll User ${ip}`, UserController.name);
-    return this.userService.findAll(role);
+  async findAll(@Query('role') role?: 'NORMAL' | 'PREMIUM' | 'ADMIN') {
+    return await this.userService.findAll(role);
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.userService.findOne(id);
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.userService.findOne(id);
   }
 
   @Patch(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  update(@Param('id', ParseUUIDPipe) id: string, @Body(ValidationPipe) updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
+  async update(@Ip() ip: string, @Param('id', ParseUUIDPipe) id: string, @Body(ValidationPipe) updateUserDto: UpdateUserDto) {
+    this.myLogger.log(`Request for update User ById ${id} | IP: ${ip}`, UserController.name);
+    return await this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id', ParseUUIDPipe) id: string) {
+  async remove(@Ip() ip: string, @Param('id', ParseUUIDPipe) id: string) {
+    this.myLogger.log(`Request for remove User ById ${id} | IP: ${ip}`, UserController.name);
     await this.userService.remove(id);
   }
 }
