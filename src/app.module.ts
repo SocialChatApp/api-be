@@ -9,8 +9,19 @@ import { AuthModule } from './auth/auth.module';
 import { ReplyModule } from './reply/reply.module';
 import { CloudStorageModule } from './cloud-storage/cloud-storage.module';
 import { ConfigModule } from '@nestjs/config';
+import { LoggerModule } from './logger/logger.module';
 @Module({
-  imports: [DatabaseModule, UserModule, PostModule, CommentModule, AuthModule, ReplyModule, CloudStorageModule, ConfigModule.forRoot({ isGlobal: true })],
+  imports: [
+    DatabaseModule,
+    UserModule,
+    PostModule,
+    CommentModule,
+    AuthModule,
+    ReplyModule,
+    CloudStorageModule,
+    ConfigModule.forRoot({ isGlobal: true }),
+    LoggerModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

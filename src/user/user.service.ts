@@ -1,12 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Ip } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { Prisma } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { LoggerService } from 'src/logger/logger.service';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly service: DatabaseService) { };
+  constructor(
+    private readonly service: DatabaseService,
+    private readonly loggerService: LoggerService
+  ) { };
 
   async create(createUserDto: CreateUserDto) {
 
@@ -20,33 +24,24 @@ export class UserService {
       avatarUrl: createUserDto.avatarUrl
     };
 
-    return this.service.user.create({
-      data: data,
-      include: {
-        posts: true,
-        comments: true
-      }
+    const createdUser = await this.service.user.create({
+      data: data
     });
+
+    return { id: createdUser.id };
   }
 
-  async findAll(role?: 'NORMAL' | 'PREMIUM' | 'ADMIN') {
+  async findAll(@Ip() ip: String, role?: 'NORMAL' | 'PREMIUM' | 'ADMIN') {
+
     if (role) {
       return this.service.user.findMany({
         where: {
           role
-        },
-        include: {
-          comments: true,
-          posts: true
         }
       })
     }
-    return this.service.user.findMany({
-      include: {
-        comments: true,
-        posts: true
-      }
-    });
+
+    return this.service.user.findMany();
   }
 
   async findOne(id: string) {
@@ -61,11 +56,7 @@ export class UserService {
     return this.service.user.findUnique({
       where: {
         email,
-      },
-      include: {
-        posts: true,
-        comments: true,
-      },
+      }
     });
   }
 
@@ -82,20 +73,13 @@ export class UserService {
 
     return this.service.user.update({
       where: { id },
-      data: data,
-      include: {
-        posts: true,
-        comments: true
-      }
+      data: data
     });
   }
 
   async remove(id: string) {
     return this.service.user.delete({
-      where: { id }, include: {
-        posts: true,
-        comments: true
-      }
+      where: { id }
     });
   }
 }

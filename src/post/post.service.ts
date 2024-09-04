@@ -9,9 +9,8 @@ export class PostService {
 
   constructor(private readonly service: DatabaseService) { };
 
-  //Şu anlık userId kısmında hata verdiği | sorun olduğu için default dto kullanılıyor. Sonradan prisma.postcreateinput'a geçilecek
   async create(createPostDto: CreatePostDto) {
-    return this.service.post.create(
+    const post = await this.service.post.create(
       {
         data: {
           title: createPostDto.title,
@@ -21,21 +20,20 @@ export class PostService {
             create: []
           },
           userId: createPostDto.userId
-        },
-        include: {
-          user: true,
-          comments: true,
         }
       }
-    )
+    );
+
+    return { id: post.id };
+
   }
 
   async findAll() {
-    return this.service.post.findMany();
+    return await this.service.post.findMany();
   }
 
   async findAllByUserId(id: string) {
-    return this.service.post.findMany({
+    return await this.service.post.findMany({
       where: {
         userId: id,
       }
@@ -43,39 +41,28 @@ export class PostService {
   }
 
   async findOne(id: string) {
-    return this.service.post.findUnique({
-      where: { id }, include: {
-        user: true,
-        comments: true
-      }
+    return await this.service.post.findUnique({
+      where: { id }
     });
   }
 
 
   async update(id: string, updatePostDto: UpdatePostDto) {
-    return this.service.post.update(
+    return await this.service.post.update(
       {
         where: { id },
         data: {
           title: updatePostDto.title,
           content: updatePostDto.content,
           imageUrl: updatePostDto.imageUrl
-        },
-        include: {
-          user: true,
-          comments: true
         }
       })
   }
 
   async remove(id: string) {
-    return this.service.post.delete({
+    return await this.service.post.delete({
       where: {
         id
-      },
-      include: {
-        user: true,
-        comments: true
       }
     })
   }
