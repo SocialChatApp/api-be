@@ -8,9 +8,9 @@ import { UserService } from './user.service';
 @Controller('users')
 export class UserController {
   constructor(
-    private readonly userService: UserService,
-    private readonly myLogger: LoggerService
+    private readonly userService: UserService
   ) { }
+  private readonly myLogger = new LoggerService(UserController.name);
 
   @Post()
   async create(@Ip() ip: string, @Body(ValidationPipe) createUserDto: CreateUserDto) {

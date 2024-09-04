@@ -8,9 +8,10 @@ import { LoggerService } from 'src/logger/logger.service';
 @Injectable()
 export class UserService {
   constructor(
-    private readonly service: DatabaseService,
-    private readonly loggerService: LoggerService
+    private readonly service: DatabaseService
   ) { };
+
+  private readonly loggerService = new LoggerService(UserService.name);
 
   async create(createUserDto: CreateUserDto) {
 
