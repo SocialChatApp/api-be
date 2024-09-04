@@ -1,40 +1,48 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, ParseUUIDPipe, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Ip, Param, ParseIntPipe, ParseUUIDPipe, Patch, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { ReplyService } from './reply.service';
 import { UpdateReplyDto } from 'src/comment/dto/update-comment-reply-dto';
 import { CreateReplyDto } from 'src/comment/dto/create-comment-reply-dto';
+import { LoggerService } from 'src/logger/logger.service';
 
 @Controller('reply')
 export class ReplyController {
     constructor(private readonly service: ReplyService) { }
 
+    private readonly logger = new LoggerService(ReplyController.name);
+
     @Post()
     @UseGuards(AuthGuard)
-    createReply(@Body() createReplyDto: CreateReplyDto) {
-        return this.service.createReply(createReplyDto);
+    async createReply(@Ip() ip: string, @Body() createReplyDto: CreateReplyDto) {
+        this.logger.log(`Request for create reply`, ReplyController.name);
+        return await this.service.createReply(createReplyDto);
     }
 
     @Get()
     @UseGuards(AuthGuard)
-    findAllReplies() {
-        return this.service.findAllReplies();
+    async findAllReplies() {
+        return await this.service.findAllReplies();
     }
 
     @Get(':id')
     @UseGuards(AuthGuard)
-    findOneReply(@Param('id', ParseUUIDPipe) id: string) {
-        return this.service.findOneReply(id);
+    async findOneReply(@Param('id', ParseUUIDPipe) id: string) {
+        return await this.service.findOneReply(id);
     }
 
     @Patch(':id')
     @UseGuards(AuthGuard)
-    updateReply(@Param('id', ParseUUIDPipe) id: string, @Body() updateReplyDto: UpdateReplyDto) {
-        return this.service.updateReply(id, updateReplyDto);
+    @HttpCode(HttpStatus.NO_CONTENT)
+    async updateReply(@Ip() ip: string, @Param('id', ParseUUIDPipe) id: string, @Body() updateReplyDto: UpdateReplyDto) {
+        this.logger.log(`Request for update reply`, ReplyController.name);
+        return await this.service.updateReply(id, updateReplyDto);
     }
 
     @Delete(':id')
     @UseGuards(AuthGuard)
-    removeReply(@Param('id', ParseUUIDPipe) id: string) {
-        return this.service.deleteReply(id);
+    @HttpCode(HttpStatus.NO_CONTENT)
+    async removeReply(@Ip() ip: string, @Param('id', ParseUUIDPipe) id: string) {
+        this.logger.log(`Request for delete reply`, ReplyController.name);
+        return await this.service.deleteReply(id);
     }
 }
