@@ -8,100 +8,95 @@ import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class ReplyService {
+  constructor(
+    private readonly service: DatabaseService,
+    private readonly userService: UserService,
+    private readonly commentService: CommentService,
+  ) {}
 
-    constructor(
-        private readonly service: DatabaseService,
-        private readonly userService: UserService,
-        private readonly commentService: CommentService
-    ) { };
+  private readonly logger = new LoggerService(ReplyService.name);
 
-    private readonly logger = new LoggerService(ReplyService.name);
+  async createReply(createReplyDto: CreateReplyDto) {
+    await this.CheckCommentAndUserExist(
+      createReplyDto.userId,
+      createReplyDto.commentId,
+    );
 
+    const reply = await this.service.commentReplies.create({
+      data: createReplyDto,
+    });
 
-    async createReply(createReplyDto: CreateReplyDto) {
+    this.logger.log(`Reply created succesfully ID: ${reply.id}`);
 
-        await this.CheckCommentAndUserExist(createReplyDto.userId, createReplyDto.commentId);
+    return { id: reply.id };
+  }
 
-        const reply = await this.service.commentReplies.create(
-            {
-                data: createReplyDto
-            }
-        );
+  async findAllReplies() {
+    return await this.service.commentReplies.findMany();
+  }
 
-        this.logger.log(`Reply created succesfully ID: ${reply.id}`);
+  async findOneReply(id: string) {
+    await this.CheckIsReplyExist(id);
 
-        return { id: reply.id };
-    }
+    return await this.service.commentReplies.findUnique({
+      where: {
+        id,
+      },
+    });
+  }
 
-    async findAllReplies() {
-        return await this.service.commentReplies.findMany()
-    }
+  async deleteReply(id: string) {
+    await this.CheckIsReplyExist(id);
 
-    async findOneReply(id: string) {
+    const deletedReply = await this.service.commentReplies.delete({
+      where: {
+        id,
+      },
+    });
+    this.logger.log(`Reply deleted succesfully ID: ${deletedReply.id}`);
+    return deletedReply;
+  }
 
-        await this.CheckIsReplyExist(id);
+  async updateReply(id: string, updateReplyDto: UpdateReplyDto) {
+    await this.CheckCommentAndUserExist(
+      updateReplyDto.userId,
+      updateReplyDto.commentId,
+    );
 
-        return await this.service.commentReplies.findUnique(
-            {
-                where: {
-                    id
-                }
-            }
-        )
-    }
+    await this.CheckIsReplyExist(id);
 
+    const updatedReply = await this.service.commentReplies.update({
+      where: {
+        id,
+      },
+      data: updateReplyDto,
+    });
 
-    async deleteReply(id: string) {
+    this.logger.log(`Reply deleted succesfully ID: ${updatedReply.id}`);
+    return updatedReply;
+  }
 
-        await this.CheckIsReplyExist(id);
+  async CheckCommentAndUserExist(userId: string, commentId: string) {
+    if (
+      !(await this.commentService.IsCommentExist(commentId)) &&
+      !(await this.userService.IsUserExist(userId))
+    )
+      throw new NotFoundException(
+        `Comment Not Found ${commentId} | User Not Found ${userId}`,
+      );
+    else if (!(await this.commentService.IsCommentExist(commentId)))
+      throw new NotFoundException(`Comment Not Found ${commentId} `);
+    else if (!(await this.userService.IsUserExist(userId)))
+      throw new NotFoundException(`User Not Found ${userId}`);
+  }
 
-        const deletedReply = await this.service.commentReplies.delete(
-            {
-                where: {
-                    id
-                }
-            }
-        )
-        this.logger.log(`Reply deleted succesfully ID: ${deletedReply.id}`);
-        return deletedReply;
-    }
+  async CheckIsReplyExist(id: string) {
+    const reply = await this.service.commentReplies.findUnique({
+      where: {
+        id,
+      },
+    });
 
-    async updateReply(id: string, updateReplyDto: UpdateReplyDto) {
-
-        await this.CheckCommentAndUserExist(updateReplyDto.userId, updateReplyDto.commentId);
-
-        await this.CheckIsReplyExist(id);
-
-        const updatedReply = await this.service.commentReplies.update({
-            where: {
-                id
-            },
-            data: updateReplyDto
-        });
-
-        this.logger.log(`Reply deleted succesfully ID: ${updatedReply.id}`);
-        return updatedReply;
-    }
-
-    async CheckCommentAndUserExist(userId: string, commentId: string) {
-
-        if (!await this.commentService.IsCommentExist(commentId) && !await this.userService.IsUserExist(userId))
-            throw new NotFoundException(`Comment Not Found ${commentId} | User Not Found ${userId}`);
-        else if (!await this.commentService.IsCommentExist(commentId))
-            throw new NotFoundException(`Comment Not Found ${commentId} `);
-        else if (!await this.userService.IsUserExist(userId))
-            throw new NotFoundException(`User Not Found ${userId}`);
-    }
-
-    async CheckIsReplyExist(id: string) {
-        const reply = await this.service.commentReplies.findUnique({
-            where: {
-                id
-            }
-        })
-
-        if (!reply)
-            throw new NotFoundException(`Reply Not Found ${id}`);
-    }
-
+    if (!reply) throw new NotFoundException(`Reply Not Found ${id}`);
+  }
 }
