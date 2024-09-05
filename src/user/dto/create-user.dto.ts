@@ -1,4 +1,5 @@
-import { Prisma } from "@prisma/client";
+/* eslint-disable prettier/prettier */
+// import { Prisma } from "@prisma/client";
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { CreateCommentDto } from "src/comment/dto/create-comment.dto"
 import { CreatePostDto } from "src/post/dto/create-post.dto"
@@ -6,7 +7,7 @@ import { Role, SearchType } from "@prisma/client";
 import { Type } from "class-transformer";
 
 export class CreateUserDto {
-    id: string;
+    // id: string;
     @IsEmail()
     @IsNotEmpty()
     email: string;
