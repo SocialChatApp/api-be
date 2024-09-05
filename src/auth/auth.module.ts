@@ -4,6 +4,7 @@ import { AuthController } from './auth.controller';
 import { UserModule } from 'src/user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { JWT_SECRET } from 'src/configs/jwt-secret';
+import { VerificationCacheModule } from 'src/verification-cache/verification-cache.module';
 
 
 @Module({
@@ -16,8 +17,7 @@ import { JWT_SECRET } from 'src/configs/jwt-secret';
       secret: JWT_SECRET,
       signOptions: { expiresIn: '30m' },
     }),
-
-
+    VerificationCacheModule
   ],
 })
 export class AuthModule { }
