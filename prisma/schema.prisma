@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // uncomment next line if you use Prisma <5.10
+  // directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+model User {
+  id             String           @id @default(uuid())
+  email          String           @unique
+  password       String
+  name           String
+  surname        String
+  avatarUrl      String
+  comments       Comment[]
+  role           Role
+  searchType     SearchType
+  posts          Post[]
+  CommentReplies CommentReplies[]
+}
+
+model Comment {
+  id       String           @id @default(uuid())
+  content  String
+  User     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   String
+  Post     Post             @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId   String
+  status   StatusType       @default(Draft)
+  createAt DateTime         @default(now())
+  updateAt DateTime         @updatedAt
+  replies  CommentReplies[]
+}
+
+model Post {
+  id       String     @id @default(uuid())
+  title    String
+  content  String
+  imageUrl String
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments Comment[]
+  userId   String
+  status   StatusType @default(Draft)
+  createAt DateTime   @default(now())
+  updateAt DateTime   @updatedAt
+}
+
+model CommentReplies {
+  id        String   @id @default(uuid())
+  content   String
+  Comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId String?
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+}
+
+enum Role {
+  ADMIN
+  PREMIUM
+  NORMAL
+}
+
+enum SearchType {
+  PUBLIC
+  PRIVATE
+}
+
+enum StatusType {
+  Draft
+  Publish
+  Archived
+  Delete
+  Rejected
+}
