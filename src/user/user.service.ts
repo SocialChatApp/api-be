@@ -4,6 +4,7 @@ import { Prisma } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoggerService } from 'src/logger/logger.service';
+import { VerificationCacheService } from 'src/verification-cache/verification-cache.service';
 
 @Injectable()
 export class UserService {

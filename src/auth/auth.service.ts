@@ -5,6 +5,7 @@ import { LoginDto } from './dto/LoginDto';
 import { SignInDto } from './dto/SignInDto';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
+import { VerificationCacheService } from 'src/verification-cache/verification-cache.service';
 
 
 @Injectable()
@@ -12,7 +13,8 @@ export class AuthService {
 
     constructor(
         private readonly userService: UserService,
-        private readonly jwtService: JwtService
+        private readonly jwtService: JwtService,
+        private readonly verifyService: VerificationCacheService
     ) { };
 
     async Authenticate(userInput: LoginDto): Promise<AuthResult> {
@@ -52,5 +54,12 @@ export class AuthService {
             // UserMail: user.eMail,
             // UserPassword: user.password
         };
+    }
+
+    async Verify() {
+        await this.verifyService.CreateKey('sukru.beyy@outlook.com');
+
+        const response = await this.verifyService.GetVerifyCode();
+        return response;
     }
 }

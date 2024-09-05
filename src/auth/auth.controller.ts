@@ -18,6 +18,12 @@ export class AuthController {
         return this.service.Authenticate(loginDto);
     }
 
+    @Post('verify')
+    verifyMail() {
+        return this.service.Verify();
+    }
+
+
     @UseGuards(AuthGuard)
     @Get('me')
     getUserInfo(@Request() request) {
