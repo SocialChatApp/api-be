@@ -4,7 +4,8 @@ import { AuthController } from './auth.controller';
 import { UserModule } from 'src/user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { JWT_SECRET } from 'src/configs/jwt-secret';
-import { VerificationCacheModule } from 'src/verification-cache/verification-cache.module';
+import { MailerModule } from 'src/mailer/mailer.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 
 @Module({
@@ -17,7 +18,12 @@ import { VerificationCacheModule } from 'src/verification-cache/verification-cac
       secret: JWT_SECRET,
       signOptions: { expiresIn: '30m' },
     }),
-    VerificationCacheModule
+    CacheModule.register(
+      {
+        ttl: 120000
+      }
+    ),
+    MailerModule
   ],
 })
 export class AuthModule { }
