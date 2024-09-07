@@ -10,7 +10,7 @@ import { ReplyModule } from './reply/reply.module';
 import { CloudStorageModule } from './cloud-storage/cloud-storage.module';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from './logger/logger.module';
-import { VerificationCacheModule } from './verification-cache/verification-cache.module';
+import { MailerModule } from './mailer/mailer.module';
 
 @Module({
   imports: [
@@ -23,7 +23,7 @@ import { VerificationCacheModule } from './verification-cache/verification-cache
     CloudStorageModule,
     ConfigModule.forRoot({ isGlobal: true }),
     LoggerModule,
-    VerificationCacheModule,
+    MailerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
