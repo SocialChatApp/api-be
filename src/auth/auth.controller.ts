@@ -21,13 +21,13 @@ export class AuthController {
         return this.service.Authenticate(loginDto);
     }
 
-    @Get('token')
-    @HttpCode(HttpStatus.NO_CONTENT)
+    @Post('token')
     async generateVerificationToken(@Body() mailDto: EmailDto) {
+        console.log("REQUEST ATILDI");
         return this.service.generateVerificationToken(mailDto);
     }
 
-    @Get('verify')
+    @Post('verify')
     async verify(@Body() verifyDto: VerificationDto) {
         return this.service.verify(verifyDto);
     }
