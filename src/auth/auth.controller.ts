@@ -23,7 +23,6 @@ export class AuthController {
 
     @Post('token')
     async generateVerificationToken(@Body() mailDto: EmailDto) {
-        console.log("REQUEST ATILDI");
         return this.service.generateVerificationToken(mailDto);
     }
 

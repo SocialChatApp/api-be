@@ -73,9 +73,15 @@ export class AuthService {
     }
 
     async verify(VerificationDto: VerificationDto): Promise<boolean> {
+
+        if (! await this.IsVerifyTokenExist(VerificationDto.mail))
+            throw new UnauthorizedException('You have no any token or you are used. Pls try again take verify code');
+
         const token = await this.GetVerifyToken(VerificationDto.mail);
-        if (token == VerificationDto.token)
+        if (token == VerificationDto.token) {
+            await this.DeleteToken(VerificationDto.mail);
             return true;
+        }
         else
             throw new UnauthorizedException('Invalid or expired verification code');
     }
@@ -88,5 +94,14 @@ export class AuthService {
 
     async GetVerifyToken(mail: string): Promise<number> {
         return await this.cacheManager.get<number>(mail);
+    }
+
+    async DeleteToken(mail: string) {
+        return await this.cacheManager.del(mail);
+    }
+
+    async IsVerifyTokenExist(mail: string): Promise<boolean> {
+        const value = await this.cacheManager.get(mail);
+        return value !== undefined;
     }
 }
