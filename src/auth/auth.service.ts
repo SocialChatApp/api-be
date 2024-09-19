@@ -34,7 +34,6 @@ export class AuthService {
 
         if (user && user.password === userDto.password) {
             return {
-                userId: user.id,
                 eMail: user.email,
                 password: user.password
             };
@@ -44,8 +43,9 @@ export class AuthService {
 
 
     async CreateToken(user: SignInDto): Promise<AuthResult> {
+        const userId = (await this.userService.findOneByEmail(user.eMail)).id;
         const payload = {
-            sub: user.userId,
+            sub: userId,
             userMail: user.eMail,
         };
 
