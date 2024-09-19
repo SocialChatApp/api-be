@@ -10,6 +10,8 @@ import { ReplyModule } from './reply/reply.module';
 import { CloudStorageModule } from './cloud-storage/cloud-storage.module';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from './logger/logger.module';
+import { MailerModule } from './mailer/mailer.module';
+
 @Module({
   imports: [
     DatabaseModule,
@@ -20,7 +22,8 @@ import { LoggerModule } from './logger/logger.module';
     ReplyModule,
     CloudStorageModule,
     ConfigModule.forRoot({ isGlobal: true }),
-    LoggerModule
+    LoggerModule,
+    MailerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

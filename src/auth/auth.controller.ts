@@ -1,8 +1,11 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, NotImplementedException, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Request, UseGuards, UseInterceptors } from '@nestjs/common';
 import { LoginDto } from './dto/LoginDto';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './guard/auth.guard';
 import { UserService } from 'src/user/user.service';
+import { EmailDto } from 'src/auth/dto/Email';
+import { VerificationDto } from 'src/auth/dto/verification';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('auth')
 export class AuthController {
@@ -14,13 +17,23 @@ export class AuthController {
 
     @HttpCode(HttpStatus.OK)
     @Post('login')
-    login(@Body() loginDto: LoginDto) {
+    async login(@Body() loginDto: LoginDto) {
         return this.service.Authenticate(loginDto);
+    }
+
+    @Post('token')
+    async generateVerificationToken(@Body() mailDto: EmailDto) {
+        return this.service.generateVerificationToken(mailDto);
+    }
+
+    @Post('verify')
+    async verify(@Body() verifyDto: VerificationDto) {
+        return this.service.verify(verifyDto);
     }
 
     @UseGuards(AuthGuard)
     @Get('me')
-    getUserInfo(@Request() request) {
+    async getUserInfo(@Request() request) {
         return this.userService.findOne(request.user.userId);
     }
 }
