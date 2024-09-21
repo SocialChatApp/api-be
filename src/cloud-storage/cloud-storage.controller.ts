@@ -1,8 +1,9 @@
-import { Controller, Delete, FileTypeValidator, Get, HttpCode, MaxFileSizeValidator, Param, ParseFilePipe, Post, Query, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Delete, FileTypeValidator, Get, HttpCode, MaxFileSizeValidator, Param, ParseFilePipe, Post, Query, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { CloudStorageService } from './cloud-storage.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { extname } from 'path';
+import { AuthGuard } from 'src/auth/guard/auth.guard';
 
 @Controller('cloud-storage')
 export class CloudStorageController {
@@ -11,6 +12,7 @@ export class CloudStorageController {
 
     @Post(':path/:name')
     @UseInterceptors(FileInterceptor('file'))
+    @UseGuards(AuthGuard)
     uploadFile(
         @Param('path') path: string,
         @Param('name') name: string,
@@ -33,6 +35,7 @@ export class CloudStorageController {
 
 
     @Get(':path/:name')
+    @UseGuards(AuthGuard)
     async getFile(@Param('path') path: string, @Param('name') name: string, @Res() res: Response) {
         const key = `${path}/${name}`;
         const fileStream = await this.service.getFile(key);
@@ -41,7 +44,7 @@ export class CloudStorageController {
     }
 
     @Delete(':path/:name')
-    @HttpCode(204) // Başarılı silme işlemi için 204 No Content döndür
+    @HttpCode(204)
     async deleteFile(
         @Param('path') path: string,
         @Param('name') name: string

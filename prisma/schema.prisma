@@ -43,16 +43,17 @@ model Comment {
 }
 
 model Post {
-  id       String     @id @default(uuid())
-  title    String
-  content  String
-  imageUrl String
-  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  comments Comment[]
-  userId   String
-  status   StatusType @default(Draft)
-  createAt DateTime   @default(now())
-  updateAt DateTime   @updatedAt
+  id        String     @id @default(uuid())
+  title     String
+  content   String
+  imageUrl  String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments  Comment[]
+  likeCount Int        @default(0)
+  userId    String
+  status    StatusType @default(Draft)
+  createAt  DateTime   @default(now())
+  updateAt  DateTime   @updatedAt
 }
 
 model CommentReplies {
