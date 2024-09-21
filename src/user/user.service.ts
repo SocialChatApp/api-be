@@ -11,7 +11,7 @@ import { LoggerService } from 'src/logger/logger.service';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly service: DatabaseService) {}
+  constructor(private readonly service: DatabaseService) { }
 
   private readonly loggerService = new LoggerService(UserService.name);
 
@@ -44,15 +44,26 @@ export class UserService {
   }
 
   async findAll(role?: 'NORMAL' | 'PREMIUM' | 'ADMIN') {
+
+    const selectFields = {
+      id: true,
+      name: true,
+      surname: true,
+      avatarUrl: true,
+    };
+
     if (role) {
       return this.service.user.findMany({
         where: {
           role,
         },
+        select: selectFields
       });
     }
 
-    return this.service.user.findMany();
+    return this.service.user.findMany({
+      select: selectFields
+    });
   }
 
   async findOne(id: string) {

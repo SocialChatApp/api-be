@@ -6,7 +6,7 @@ import { LoggerService } from 'src/logger/logger.service';
 
 @Injectable()
 export class PostService {
-  constructor(private readonly service: DatabaseService) {}
+  constructor(private readonly service: DatabaseService) { }
 
   private readonly loggerService = new LoggerService(PostService.name);
 
@@ -33,7 +33,17 @@ export class PostService {
   }
 
   async findAll() {
-    return await this.service.post.findMany();
+    return await this.service.post.findMany(
+      {
+        select: {
+          id: true,
+          title: true,
+          content: true,
+          userId: true,
+          imageUrl: true
+        }
+      }
+    );
   }
 
   async findAllByUserId(id: string) {

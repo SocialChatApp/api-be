@@ -35,6 +35,7 @@ export class UserController {
   }
 
   @Get()
+  @UseGuards(AuthGuard)
   async findAll(@Query('role') role?: 'NORMAL' | 'PREMIUM' | 'ADMIN') {
     return await this.userService.findAll(role);
   }
