@@ -12,15 +12,17 @@ import {
   HttpCode,
   HttpStatus,
   Ip,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoggerService } from 'src/logger/logger.service';
 import { UserService } from './user.service';
+import { AuthGuard } from 'src/auth/guard/auth.guard';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
   private readonly myLogger = new LoggerService(UserController.name);
 
   @Post()
@@ -38,11 +40,13 @@ export class UserController {
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard)
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     return await this.userService.findOne(id);
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async update(
     @Ip() ip: string,
@@ -58,6 +62,7 @@ export class UserController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(AuthGuard)
   async remove(@Ip() ip: string, @Param('id', ParseUUIDPipe) id: string) {
     this.myLogger.log(
       `Request for remove User ById ${id} | IP: ${ip}`,

@@ -24,7 +24,7 @@ export class PostController {
   constructor(
     private readonly postService: PostService,
     // private readonly userService: UserService,
-  ) {}
+  ) { }
 
   private readonly loggerService = new LoggerService(PostController.name);
 

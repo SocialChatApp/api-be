@@ -8,28 +8,31 @@ import { LoggerService } from 'src/logger/logger.service';
 
 @Controller('comment')
 export class CommentController {
-  constructor(private readonly commentService: CommentService) { }
+  constructor(
+    private readonly commentService: CommentService
+  ) { }
 
   private readonly loggerService = new LoggerService(CommentController.name);
 
   @Post()
   @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
   create(@Ip() ip: string, @Body() createCommentDto: CreateCommentDto) {
     this.loggerService.log(`Request Create Comment | IP: ${ip}`, CommentController.name);
     return this.commentService.create(createCommentDto);
   }
 
-  @Get()
+  @Get(':postId')
   @UseGuards(AuthGuard)
-  findAll() {
-    return this.commentService.findAll();
+  findAll(@Param('postId', ParseUUIDPipe) postId: string) {
+    return this.commentService.findAll(postId);
   }
 
-  @Get(':id')
-  @UseGuards(AuthGuard)
-  async findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return await this.commentService.findOne(id);
-  }
+  // @Get(':id')
+  // @UseGuards(AuthGuard)
+  // async findOne(@Param('id', ParseUUIDPipe) id: string) {
+  //   return await this.commentService.findOne(id);
+  // }
 
   @Patch(':id')
   @UseGuards(AuthGuard)

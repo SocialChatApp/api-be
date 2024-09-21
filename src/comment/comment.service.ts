@@ -34,8 +34,12 @@ export class CommentService {
   }
 
 
-  async findAll() {
-    return await this.service.comment.findMany();
+  async findAll(postId: string) {
+    return await this.service.comment.findMany({
+      where: {
+        postId
+      }
+    });
   }
 
   async findOne(id: string) {

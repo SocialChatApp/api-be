@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { CreateCommentDto } from 'src/comment/dto/create-comment.dto';
 import { Type } from 'class-transformer';
 
@@ -20,4 +20,7 @@ export class CreatePostDto {
 
   @IsString()
   imageUrl: string;
+
+  @IsNumber()
+  likeCount: number
 }
