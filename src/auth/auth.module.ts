@@ -17,7 +17,7 @@ import { redisStore } from 'cache-manager-redis-yet';
     JwtModule.register({
       global: true,
       secret: JWT_SECRET,
-      signOptions: { expiresIn: '30m' },
+      signOptions: { expiresIn: '7d' },
     }),
     CacheModule.registerAsync<RedisClientOptions>({
       useFactory: async () => {

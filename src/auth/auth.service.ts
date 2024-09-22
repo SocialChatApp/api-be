@@ -28,6 +28,15 @@ export class AuthService {
 
         return this.CreateToken(user);
     }
+    async isAccessTokenValid(accessToken: string): Promise<boolean> {
+        try {
+            await this.jwtService.verifyAsync(accessToken);
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
 
     async ValidateUser(userDto: LoginDto): Promise<SignInDto | null> {
         const user = await this.userService.findOneByEmail(userDto.email);
