@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Request, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Request, UseGuards, UseInterceptors } from '@nestjs/common';
 import { LoginDto } from './dto/LoginDto';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './guard/auth.guard';
@@ -35,5 +35,11 @@ export class AuthController {
     @Get('me')
     async getUserInfo(@Request() request) {
         return this.userService.findOne(request.user.userId);
+    }
+
+    @Post('accessToken')
+    async checkTokenValidity(@Body('accessToken') accessToken: string) {
+        const isValid = await this.service.isAccessTokenValid(accessToken);
+        return { isValid };
     }
 }
