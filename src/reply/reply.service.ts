@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CommentService } from 'src/comment/comment.service';
-import { CreateReplyDto } from 'src/comment/dto/create-comment-reply-dto';
-import { UpdateReplyDto } from 'src/comment/dto/update-comment-reply-dto';
+import { CreateReplyDto } from 'src/reply/dto/create-comment-reply-dto';
+import { UpdateReplyDto } from 'src/reply/dto/update-comment-reply-dto';
 import { DatabaseService } from 'src/database/database.service';
 import { LoggerService } from 'src/logger/logger.service';
 import { UserService } from 'src/user/user.service';
@@ -12,7 +12,7 @@ export class ReplyService {
     private readonly service: DatabaseService,
     private readonly userService: UserService,
     private readonly commentService: CommentService,
-  ) {}
+  ) { }
 
   private readonly logger = new LoggerService(ReplyService.name);
 
@@ -31,8 +31,14 @@ export class ReplyService {
     return { id: reply.id };
   }
 
-  async findAllReplies() {
-    return await this.service.commentReplies.findMany();
+  async findAllReplies(commentId: string) {
+    return await this.service.commentReplies.findMany(
+      {
+        where: {
+          commentId
+        }
+      }
+    );
   }
 
   async findOneReply(id: string) {
