@@ -14,13 +14,13 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { ReplyService } from './reply.service';
-import { UpdateReplyDto } from 'src/comment/dto/update-comment-reply-dto';
-import { CreateReplyDto } from 'src/comment/dto/create-comment-reply-dto';
+import { UpdateReplyDto } from 'src/reply/dto/update-comment-reply-dto';
+import { CreateReplyDto } from 'src/reply/dto/create-comment-reply-dto';
 import { LoggerService } from 'src/logger/logger.service';
 
 @Controller('reply')
 export class ReplyController {
-  constructor(private readonly service: ReplyService) {}
+  constructor(private readonly service: ReplyService) { }
 
   private readonly logger = new LoggerService(ReplyController.name);
 
@@ -31,17 +31,17 @@ export class ReplyController {
     return await this.service.createReply(createReplyDto);
   }
 
-  @Get()
-  @UseGuards(AuthGuard)
-  async findAllReplies() {
-    return await this.service.findAllReplies();
-  }
-
   @Get(':id')
   @UseGuards(AuthGuard)
-  async findOneReply(@Param('id', ParseUUIDPipe) id: string) {
-    return await this.service.findOneReply(id);
+  async findAllReplies(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.service.findAllReplies(id);
   }
+
+  // @Get(':id')
+  // @UseGuards(AuthGuard)
+  // async findOneReply(@Param('id', ParseUUIDPipe) id: string) {
+  //   return await this.service.findOneReply(id);
+  // }
 
   @Patch(':id')
   @UseGuards(AuthGuard)
