@@ -8,17 +8,17 @@ export class MailerService {
 
     constructor() {
         this.transporter = nodemailer.createTransport({
-            service: 'gmail', // Örnek olarak Gmail kullanıyorum
+            service: 'gmail',
             auth: {
-                user: 'developersukru@gmail.com',
-                pass: 'tnwf wynt kdbx gdki',
+                user: 'your-e-mail',
+                pass: 'your-secret-pass',
             },
         });
     }
 
     async sendMail(to: string, subject: string, text: string) {
         const mailOptions = {
-            from: 'developersukru@gmail.com',
+            from: 'your-e-mail',
             to,
             subject,
             text,
