@@ -1,22 +1,27 @@
-# FROM node:18.18.2-alpine
+# Development Stage
+FROM node:18-alpine AS development
 
-# RUN apk add --no-cache bash
-# RUN npm i -g @nestjs/cli typescript ts-node
+# Create app directory
+WORKDIR /app
 
-# COPY package*.json /tmp/app/
-# RUN cd /tmp/app && npm install
+# Copy package.json and package-lock.json first to utilize Docker cache
+COPY package*.json ./
 
-# COPY . /usr/src/app
-# RUN cp -a /tmp/app/node_modules /usr/src/app
-# COPY ./wait-for-it.sh /opt/wait-for-it.sh
-# RUN chmod +x /opt/wait-for-it.sh
-# COPY ./startup.dev.sh /opt/startup.dev.sh
-# RUN chmod +x /opt/startup.dev.sh
-# RUN sed -i 's/\r//g' /opt/wait-for-it.sh
-# RUN sed -i 's/\r//g' /opt/startup.dev.sh
+# Install dependencies
+RUN npm install
 
-# WORKDIR /usr/src/app
-# RUN if [ ! -f .env ]; then cp env-example .env; fi
-# RUN npm run build
+# Create the logs directory and set permissions
+RUN mkdir -p /app/logs
+RUN chmod -R 777 /app/logs
 
-# CMD ["/opt/startup.dev.sh"]
+# Change ownership of /app to the node user
+RUN chown -R node:node /app
+
+# Copy the rest of the application source
+COPY . .
+
+# Use the node user from the image (instead of the root user)
+USER node
+
+# Command to run your app in development mode
+CMD ["npm", "run", "start:dev"]

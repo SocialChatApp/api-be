@@ -23,8 +23,8 @@ import { redisStore } from 'cache-manager-redis-yet';
       useFactory: async () => {
         const store = await redisStore({
           socket: {
-            host: "localhost",
-            port: 6380,
+            host: process.env.REDIS_HOST,
+            port: parseInt(process.env.REDIS_PORT),
           },
         });
 
@@ -32,6 +32,7 @@ import { redisStore } from 'cache-manager-redis-yet';
           store: {
             create: () => store,
           },
+          isGlobal: true,
         };
       },
     }),
